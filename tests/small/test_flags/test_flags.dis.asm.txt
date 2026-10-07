@@ -1,0 +1,51 @@
+; ---- max ----
+00000000000010f9 <max>:
+    10f9:	endbr64
+    10fd:	cmp    esi,edi
+    10ff:	mov    eax,edi
+    1101:	cmovge eax,esi
+    1104:	ret
+
+; ---- min ----
+0000000000001105 <min>:
+    1105:	endbr64
+    1109:	cmp    esi,edi
+    110b:	mov    eax,edi
+    110d:	cmovle eax,esi
+    1110:	ret
+
+; ---- abs_val ----
+0000000000001111 <abs_val>:
+    1111:	endbr64
+    1115:	mov    eax,edi
+    1117:	neg    eax
+    1119:	cmovs  eax,edi
+    111c:	ret
+
+; ---- ucmp ----
+0000000000001136 <ucmp>:
+    1136:	endbr64
+    113a:	mov    eax,0x1
+    113f:	cmp    esi,edi
+    1141:	jb     114d <ucmp+0x17>
+    1143:	cmp    edi,esi
+    1145:	setb   al
+    1148:	movzx  eax,al
+    114b:	add    eax,eax
+    114d:	ret
+
+Disassembly of section .fini:
+
+; ---- cmp_branch ----
+000000000000111d <cmp_branch>:
+    111d:	endbr64
+    1121:	cmp    edi,esi
+    1123:	je     1132 <cmp_branch+0x15>
+    1125:	mov    eax,edx
+    1127:	sub    eax,ecx
+    1129:	imul   edx,ecx
+    112c:	cmp    edi,esi
+    112e:	cmovle eax,edx
+    1131:	ret
+    1132:	lea    eax,[rdx+rcx*1]
+    1135:	ret

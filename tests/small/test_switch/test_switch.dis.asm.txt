@@ -1,0 +1,61 @@
+; ---- dispatch ----
+00000000000010f9 <dispatch>:
+    10f9:	endbr64
+    10fd:	cmp    edi,0x7
+    1100:	ja     1141 <dispatch+0x48>
+    1102:	mov    edi,edi
+    1104:	lea    rcx,[rip+0xef5]        # 2000 <_fini+0xe80>
+    110b:	movsxd rax,DWORD PTR [rcx+rdi*4]
+    110f:	add    rax,rcx
+    1112:	notrack jmp rax
+    1115:	lea    eax,[rdx+rsi*1]
+    1118:	ret
+    1119:	mov    eax,esi
+    111b:	sub    eax,edx
+    111d:	ret
+    111e:	mov    eax,edx
+    1120:	imul   eax,esi
+    1123:	ret
+    1124:	mov    eax,edx
+    1126:	and    eax,esi
+    1128:	ret
+    1129:	mov    eax,edx
+    112b:	or     eax,esi
+    112d:	ret
+    112e:	mov    eax,edx
+    1130:	xor    eax,esi
+    1132:	ret
+    1133:	mov    eax,esi
+    1135:	mov    ecx,edx
+    1137:	shl    eax,cl
+    1139:	ret
+    113a:	mov    eax,esi
+    113c:	mov    ecx,edx
+    113e:	sar    eax,cl
+    1140:	ret
+    1141:	mov    eax,0xffffffff
+    1146:	ret
+
+; ---- sparse ----
+0000000000001147 <sparse>:
+    1147:	endbr64
+    114b:	cmp    edi,0x3e8
+    1151:	je     117c <sparse+0x35>
+    1153:	jg     116a <sparse+0x23>
+    1155:	mov    eax,esi
+    1157:	test   edi,edi
+    1159:	je     117f <sparse+0x38>
+    115b:	add    esi,0x1
+    115e:	cmp    edi,0x64
+    1161:	mov    eax,0xffffffff
+    1166:	cmove  eax,esi
+    1169:	ret
+    116a:	add    esi,0x3
+    116d:	cmp    edi,0x2710
+    1173:	mov    eax,0xffffffff
+    1178:	cmove  eax,esi
+    117b:	ret
+    117c:	lea    eax,[rsi+0x2]
+    117f:	ret
+
+Disassembly of section .fini:

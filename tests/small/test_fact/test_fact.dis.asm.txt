@@ -1,0 +1,34 @@
+; ---- fact ----
+0000000000001100 <fact>:
+    1100:	endbr64
+    1104:	cmp    edi,0x1
+    1107:	jle    112d <fact+0x2d>
+    1109:	add    edi,0x1
+    110c:	mov    eax,0x2
+    1111:	mov    edx,0x1
+    1116:	cs nop WORD PTR [rax+rax*1+0x0]
+    1120:	imul   edx,eax
+    1123:	add    eax,0x1
+    1126:	cmp    eax,edi
+    1128:	jne    1120 <fact+0x20>
+    112a:	mov    eax,edx
+    112c:	ret
+    112d:	mov    edx,0x1
+    1132:	jmp    112a <fact+0x2a>
+
+; ---- fact_rec ----
+0000000000001134 <fact_rec>:
+    1134:	endbr64
+    1138:	mov    eax,0x1
+    113d:	cmp    edi,0x1
+    1140:	jle    1152 <fact_rec+0x1e>
+    1142:	push   rbx
+    1143:	mov    ebx,edi
+    1145:	lea    edi,[rdi-0x1]
+    1148:	call   1134 <fact_rec>
+    114d:	imul   eax,ebx
+    1150:	pop    rbx
+    1151:	ret
+    1152:	ret
+
+Disassembly of section .fini:

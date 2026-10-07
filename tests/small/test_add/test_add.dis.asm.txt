@@ -1,0 +1,37 @@
+; ---- add ----
+00000000000010f9 <add>:
+    10f9:	endbr64
+    10fd:	lea    eax,[rdi+rsi*1]
+    1100:	ret
+
+; ---- add_sat ----
+0000000000001101 <add_sat>:
+    1101:	endbr64
+    1105:	lea    eax,[rdi+rsi*1]
+    1108:	test   edi,edi
+    110a:	setg   dl
+    110d:	test   esi,esi
+    110f:	setg   cl
+    1112:	test   cl,dl
+    1114:	je     111a <add_sat+0x19>
+    1116:	test   eax,eax
+    1118:	js     1123 <add_sat+0x22>
+    111a:	and    edi,esi
+    111c:	not    edi
+    111e:	or     edi,eax
+    1120:	jns    1123 <add_sat+0x22>
+    1122:	ret
+    1123:	movzx  edx,dl
+    1126:	neg    edx
+    1128:	lea    eax,[rdx-0x80000000]
+    112e:	ret
+
+; ---- cond_move ----
+000000000000112f <cond_move>:
+    112f:	endbr64
+    1133:	test   edx,edx
+    1135:	mov    eax,esi
+    1137:	cmovne eax,edi
+    113a:	ret
+
+Disassembly of section .fini:
