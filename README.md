@@ -1,17 +1,17 @@
-# Orbit — x86-64 to LLVM IR lifting results
+# Translucid — x86-64 to LLVM IR lifting results
 
-Lifted LLVM IR produced by [Orbit](https://github.com/x86byte/Orbit), a binary CFG
+Lifted LLVM IR produced by [Translucid](https://github.com/x86byte/Translucid), a binary CFG
 extractor and x86-64-to-LLVM-IR lifter, shared for the LLVM community and for
 reverse engineers who want to see what machine code looks like as IR.
 
 Every artifact here was produced by one pipeline, end to end:
 
 ```
-binary  ->  orbit extractor  ->  .cfg (JSON)  ->  ir_lifter  ->  .ll (LLVM IR)
+binary  ->  translucid extractor  ->  .cfg (JSON)  ->  ir_lifter  ->  .ll (LLVM IR)
 ```
 
 Every `.ll` file in this repository was **verified by two independent tools**:
-llvmlite (the lift's own check) and `llc-19` (LLVM's compiler, no Orbit code
+llvmlite (the lift's own check) and `llc-19` (LLVM's compiler, no Translucid code
 involved). Nothing here is a hand-picked snippet — the small examples were
 compiled from the C source next to them, lifted whole, and published as the
 lifter emitted them.
@@ -50,7 +50,7 @@ through it:
 1112:  notrack jmp rax                   ; <-- no target address in sight
 ```
 
-What Orbit lifts from that — the indirect jump resolved to all eight targets, and
+What Translucid lifts from that — the indirect jump resolved to all eight targets, and
 the lifted IR is a real LLVM `switch`, not an approximation
 ([tests/small/test_switch/test_switch.ll](tests/small/test_switch/test_switch.ll)):
 
@@ -79,7 +79,7 @@ including the default, values on both sides of every boundary: `0`, `-1`,
 
 `fact_rec` from [tests/small/test_fact/test_fact.c](tests/small/test_fact/test_fact.c)
 is the other classic lifter trap: a lifted call must not clobber the caller's
-registers or stack, or recursion returns garbage. Orbit gives every lifted call
+registers or stack, or recursion returns garbage. Translucid gives every lifted call
 its own frame — the caller pushes its state, publishes its stack pointer, and the
 callee allocates *below* it, exactly like the real machine
 ([tests/small/test_fact/test_fact.ll](tests/small/test_fact/test_fact.ll)):
@@ -146,8 +146,8 @@ executor consuming this IR sees the machine's actual semantics.
 Each `tests/small/<name>/` directory holds the same function five ways:
 
 * `<name>.c` — the C source the binary was built from (`gcc -O1 -shared -fPIC`)
-* `<name>.so` — that binary, which is what Orbit was run on
-* `<name>.cfg` — the control-flow graph Orbit's extractor produced (JSON: every
+* `<name>.so` — that binary, which is what Translucid was run on
+* `<name>.cfg` — the control-flow graph Translucid's extractor produced (JSON: every
   function, basic block, instruction, and successor edge)
 * `<name>.dis.asm.txt` — disassembly of the same code, so you can read the IR
   against the instructions it came from
@@ -177,7 +177,7 @@ calls to anonymous addresses.
 
 ```bash
 # 1. extract the CFG
-orbit libtest_switch.so                  # -> libtest_switch.so.cfg
+translucid libtest_switch.so                  # -> libtest_switch.so.cfg
 
 # 2. lift it
 python python/ir_lifter.py libtest_switch.so.cfg --out test_switch.ll
@@ -190,7 +190,7 @@ The small examples are one command each from their C file:
 
 ```bash
 gcc -O1 -shared -fPIC -D'__declspec(x)=' -o test_switch.so test_switch.c
-orbit test_switch.so
+translucid test_switch.so
 python python/ir_lifter.py test_switch.so.cfg --out test_switch.ll
 llc-19 test_switch.ll -o /dev/null && echo VERIFIED
 ```
@@ -211,7 +211,7 @@ llc-19 test_switch.ll -o /dev/null && echo VERIFIED
   so the two can be read side by side.
 * **Correctness you can check, not a claim you must trust** — the lifter's
   output is differential-tested against the C source of these very functions in
-  the [Orbit repository](https://github.com/x86byte/Orbit) (the suite executes
+  the [Translucid repository](https://github.com/x86byte/Translucid) (the suite executes
   lifted functions through LLVM's JIT and compares against reference models
   over thousands of inputs per function).
 
